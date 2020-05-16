@@ -1,0 +1,99 @@
+#!/bin/bash
+
+function theme_i3() {
+	export COLOR_SSID="^c#d33682^"
+	export COLOR_SIGN="^c#cb4b16^"
+	export COLOR_TEMP="^c#b58900^"
+	export COLOR_BATT="^c#d70a53^"
+	export COLOR_TIME="^c#50c878^"
+	export COLOR_SEPP="^c#005577^"
+}
+
+function theme_grey() {
+	COLOR="^c#eeeeee^"
+	export COLOR_SSID="${COLOR}"
+	export COLOR_SIGN="${COLOR}"
+	export COLOR_TEMP="${COLOR}"
+	export COLOR_BATT="${COLOR}"
+	export COLOR_TIME="${COLOR}"
+	export COLOR_SEPP="${COLOR}"
+}
+
+function theme_blue() {
+	COLOR="^c#005fff^"
+	export COLOR_SSID="${COLOR}"
+	export COLOR_SIGN="${COLOR}"
+	export COLOR_TEMP="${COLOR}"
+	export COLOR_BATT="${COLOR}"
+	export COLOR_TIME="${COLOR}"
+	export COLOR_SEPP="${COLOR}"
+}
+
+function theme_green() {
+	COLOR="^c#50c878^"
+	export COLOR_SSID="${COLOR}"
+	export COLOR_SIGN="${COLOR}"
+	export COLOR_TEMP="${COLOR}"
+	export COLOR_BATT="${COLOR}"
+	export COLOR_TIME="${COLOR}"
+	export COLOR_SEPP="${COLOR}"
+}
+
+function separator {
+	echo -n "${COLOR_SEPP} | "
+}
+
+function blank {
+	echo -n " "
+}
+
+function batt_i3 {
+	IFS='|' read -r -a blocks <<< "$(i3status --run-once 2>/dev/null)" && echo "${blocks[3]}" | xargs
+}
+
+function print_ssid {
+	ssid=$(iw dev wlp4s0 link | grep SSID | cut -d " " -f 2-)
+	echo -n "${COLOR_SSID}${ssid}"
+}
+
+function print_signal {
+	signal=$(iw dev wlp4s0 link | grep signal | cut -d " " -f 2-)
+	echo -n "${COLOR_SIGN}${signal}"
+}
+
+function print_temp() {
+	temp=$(sensors coretemp-isa-0000 | awk '/Package id 0/ {print $4}')
+	echo -n "${COLOR_TEMP}${temp}"
+}
+
+function print_battery() {
+	batt=$(batt_i3)
+	echo -n "${COLOR_BATT}${batt}"
+}
+
+function print_time() {
+	time=$(date)
+	echo -n "${COLOR_TIME}${time}"
+}
+
+function print_status() {
+	blank
+	print_ssid
+	blank
+	print_signal
+	separator
+	print_temp
+	separator
+	print_battery
+	separator
+	print_time
+	blank
+}
+
+theme_blue
+
+while true
+do
+	xsetroot -name "$(print_status)"
+	sleep 5
+done

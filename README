@@ -1,0 +1,46 @@
+dwmstatus - display info into the dwm status bar
+------------------------------------------------
+simple script to generate info for the dwm status bar:
+
+    - wifi network name and signal strength
+    - core temperature
+    - battery status
+    - date
+
+Requirements
+------------
+i3status command for parsing the battery status
+dwm status2d patch: https://dwm.suckless.org/patches/status2d/
+lm_sensors
+
+Usage
+-----
+
+Copy this script into your $PATH.
+
+Without any display manager (startx), add in .xinitrc:
+
+    dwmstatus &
+
+When using a display manager such as lightdm, modify
+the desktop file for dwm /usr/share/xsessions/dwm.desktop
+to launch dwm from a shell script (startdwm.sh)
+
+    [Desktop Entry]
+    Name=dwm
+    Comment=Suckless.org dwm window manager
+    Exec=startdwm.sh
+    TryExec=startdwm.sh
+    Type=Application
+    X-LightDM-DesktopName=dwm
+    DesktopNames=dwm
+    Keywords=tiling;wm;windowmanager;window;manager;
+
+Add the dwmstatus command to that script. Example:
+
+    #!/bin/bash
+
+    xcompmgr &
+    feh --bg-scale ~/Pictures/wallpaper.png
+    dwmstatus &
+    exec dwm
